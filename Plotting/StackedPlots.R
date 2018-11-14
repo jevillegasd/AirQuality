@@ -10,7 +10,7 @@
 
 ####################### SETUP ####
 # Load packages
-library(threadr)
+#library(threadr)
 library(dygraphs)
 library(tidyr)
 library(leaflet)
@@ -18,17 +18,18 @@ library(readr)
 library(lubridate)
 library(ggplot2)
 library(scales)
+library(dplyr)
 
 #Set Work Environment: Make sure to set that with the dataset of interest.
-setwd("Z:/_SHARED_FOLDERS/Air Quality/Phase 2/PM Sampling (MoCCE)/2 Locations/01 Dubai Expo2020")
 fileName <-"PM_EXPO2020.csv"
+fileDir <- paste0(getwd(),"/Plotting/",fileName)
 
 #Usefull variables
 dust_event_t <- 1000    #treshold to identify something as a dust event and filter out the data
 
 ####################### IMPORT POLLUTANT CONCENTRATION DATASET ####
 
-conc_dataset <- read.csv(fileName)            #Read the file with the concentrations of pollutants
+conc_dataset <- read.csv(fileDir)             #Read the file with the concentrations of pollutants
 n_pollutants <- ncol(conc_dataset)-3          #Saves the number of pollutants
 
 keeps <- c("Date", "PM2.5")                   #Set variables to keep to build an array with the PM2.5 values
@@ -58,7 +59,7 @@ Dates <- mass_dataset$Date
 rangDate <- range(Dates, finite= TRUE) 
 
 #######################   PM VALUES PLOT ####
-
+str("Generating Time Series Plots")  
 plot1 <- ggplot(mass_dataset, aes(as.POSIXct(Date), PM2.5)) + 
   theme_bw() +
   geom_line(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="red", size = 1) +
@@ -77,7 +78,7 @@ fileDir <- paste0(outputDir,"timeSeries.png")
 png(fileDir,
     width = 1700, height = 1050, units = "px", pointsize = 30,
     bg = "white", res = 150)
-print(plot)
+print(plot1)
 dev.off()
 
 # Include ouliers by removing the limits on the yscale
@@ -104,7 +105,7 @@ dev.off()
 #######################   STACKED PLOTs ####
 # Colours follow alphabetic order of the name of the pollutants
 # Filter out some irrelevant chemical elements
-
+str("Generating Stacked Plots")  
 plot3 <- ggplot(data = conc_dataset, 
                 aes(Date, Concentration, fill = Pollutant)) +
   theme_bw() +
@@ -136,3 +137,7 @@ png(fileDir,
     bg = "white", res = 150)
 print(plot3)
 dev.off()
+
+#### END ####
+str("Finished")  
+rm(list=ls())
