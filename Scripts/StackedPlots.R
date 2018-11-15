@@ -21,10 +21,10 @@ library(scales)
 library(dplyr)
 
 #Set Work Environment: Make sure to set that with the dataset of interest.
-fileName <-"Datasets/PM_EXPO2020.csv"
+fileName <-"PM_EXPO2020.csv"
 strLocation <- "Dubai Expo2020"
 
-
+fileDir = paste0(getwd(),"/Datasets/",fileName)
 #Usefull variables
 dust_event_t <- 1000    #treshold to identify something as a dust event and filter out the data
 
