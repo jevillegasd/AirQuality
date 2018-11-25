@@ -1,14 +1,18 @@
-####  Title:  Stacked Plots
-####  Description:  Plots for reports on Particulate Matter on aerosols, it generates three png with plots, one
-####                containing the stacked visualization of the pollutants in air and two plotting only the 
-####                PM2.5 measuremnts. The two plots might differ if the samples include anormally high values.
-####  Develloper:   Federico K., Khalifa Univeristy 2018
+####  Title:  TimeSeries Plots
+####  Description:  Plots particulate matter Time Series datasets.
+####  Develloper:   
 ####                Juan Villegas. Khalifa Univeristy 2018
-####  Version:      1.1.0.2
-####  Date:         11/24/2018
+####  Version:      1.0.0.0
+####  Date:         11/25/2018
 ####  License:      CC 2018
 
 ####################### SETUP ####
+#Set Work Environment: Make sure to set that with the dataset of interest.
+fileName <-"PM_RasAlKhor.csv"
+strLocation <- "Dubai Ras Al Khor"
+strFilePrefix <- "RasAlKhor"
+strDateInterval <- "1 days"
+
 # Load packages
 #library(threadr)
 library(dygraphs)
@@ -20,16 +24,11 @@ library(ggplot2)
 library(scales)
 library(dplyr)
 
-#Set Work Environment: Make sure to set that with the dataset of interest.
-fileName <-"PM_DubaiMoCCE.csv"
-strfilePrefix <-"trial"
-strLocation <- "PM_DubaiMoCCE.csv"
-
 fileDir = paste0(getwd(),"/Datasets/",fileName)
 #Usefull variables
 dust_event_t <- 1000    #treshold to identify something as a dust event and filter out the data
 
-####################### IMPORT POLLUTANT CONCENTRATION DATASET ####
+####################### IMPORT ALL PM CONCENTRATIONS DATASET ####
 
 conc_dataset <- read.csv(fileDir)             #Read the file with the concentrations of pollutants
 n_pollutants <- ncol(conc_dataset)-3          #Saves the number of pollutants
@@ -74,11 +73,11 @@ plot1 <- ggplot(mass_dataset, aes(as.POSIXct(Date), PM2.5)) +
   geom_hline(yintercept = 50, size = 1, linetype = "dashed")+
   ggtitle(paste("Aerosol Particulate Matter(",strLocation,")")) + 
   theme(plot.title = element_text(lineheight=.8, face="plain", size = 16, hjust = 0.5)) +
-  scale_x_datetime(breaks = date_breaks("1 weeks"), labels = date_format("%d %b."))+
-  ylim(0, 500)
+  scale_x_datetime(breaks = date_breaks(strDateInterval), labels = date_format("%d %b."))+
+  ylim(0, 300)
 plot1
 
-outputPath <- paste0(outputDir,strfilePrefix,"_TS.png")
+outputPath <- paste0(outputDir,strFilePrefix,"_TS.png")
 png(outputPath,
     width = 1700, height = 900, units = "px", pointsize = 30,
     bg = "white", res = 150)
@@ -98,52 +97,13 @@ plot2 <- ggplot(mass_dataset, aes(as.POSIXct(Date), PM2.5)) +
   geom_hline(yintercept = 50, size = 1, linetype = "dashed")+
   ggtitle(paste("Aerosol Particulate Matter(",strLocation,")")) + 
   theme(plot.title = element_text(lineheight=.8, face="plain", size = 16, hjust = 0.5)) +
-  scale_x_datetime(breaks = date_breaks("1 weeks"), labels = date_format("%d %b."))
+  scale_x_datetime(breaks = date_breaks(strDateInterval), labels = date_format("%d %b."))
 plot2
 
-outputPath <- paste0(outputDir,strfilePrefix,"_TSo.png")
+outputPath <- paste0(outputDir,strFilePrefix,"_TSo.png")
 png(outputPath,
     width = 1700, height = 900, units = "px", pointsize = 30,
     bg = "white", res = 150)
 print(plot2)
 dev.off()
 
-#######################   STACKED PLOTs ####
-# Colours follow alphabetic order of the name of the pollutants
-# Filter out some irrelevant chemical elements
-str("Generating Stacked Plots")  
-plot3 <- ggplot(data = conc_dataset, 
-                aes(Date, Concentration, fill = Pollutant)) +
-  theme_bw() +
-  geom_bar(stat = "identity") +
-  geom_line(aes(Date, PM2.5), col="red", size = 2, linetype="twodash") +
-  geom_point(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="black", size = 3) +
-  scale_fill_manual(values=c("#ffc0cb", "#ccac00", "#b7b7b7", "#ff7f7f", "#9d6060", "#b2b2ff",
-                             "#008000", "#ff0000", "#99e0e0", "#0000ff", "#ffff00", "#ffffcc",
-                             "#000000", "#731d1d", "#808080", "#ffa500", "#f2f2e5",
-                             "#edd4d4")) +
-  guides(fill = guide_legend(override.aes = list(shape=NA))) +
-  theme(legend.text = element_text(colour="black", size = 12, face = "plain")) +
-  theme(axis.text.x=element_text(angle=0,hjust=0.5,vjust=0.5)) +
-  theme(axis.text.x=element_text(size=16,face="plain", colour = "black")) +
-  theme(axis.title.x = element_blank()) +                                     
-  ylab(expression(paste(PM[2.5], " (µg/",m^3, ")"),size=16)) + 
-  theme(axis.title.y = element_text(face="plain", colour="black", size=16),
-        axis.text.y  = element_text(angle=0, colour="black", vjust=0.5, size=16)) +
-  theme(axis.text.x  = element_text(angle=90, vjust=-0.9, hjust=1, size=16)) +
-  ggtitle(paste("Chemical composition of fine Particulate Matter (",strLocation,")")) + 
-  theme(plot.title = element_text(lineheight=.8, face="plain", size = 16, hjust = 0.5)) +
-  ylim(0, 500) +
-  scale_x_datetime(breaks = date_breaks("1 weeks"), labels = date_format("%d %b."))
-plot3
-
-outputPath <- paste0(outputDir,strfilePrefix,"_SP.png")
-png(outputPath,
-    width = 1700, height = 900, units = "px", pointsize = 13,
-    bg = "white", res = 150)
-print(plot3)
-dev.off()
-
-#### END ####
-str("Finished")  
-rm(list=ls())
