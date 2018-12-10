@@ -2,16 +2,16 @@
 ####  Description:  Plots particulate matter Time Series datasets.
 ####  Develloper:   
 ####                Juan Villegas. Khalifa Univeristy 2018
-####  Version:      1.0.0.0
+####  Version:      1.0.0.2
 ####  Date:         11/25/2018
 ####  License:      CC 2018
 
 ####################### SETUP ####
 #Set Work Environment: Make sure to set that with the dataset of interest.
-fileName <-"PM_RasAlKhor.csv"
-strLocation <- "Dubai Ras Al Khor"
-strFilePrefix <- "RasAlKhor"
-strDateInterval <- "1 days"
+fileName <-"PM_SharjahMoCCE.csv"
+strLocation <- "Sharjah MoCCAE"
+strFilePrefix <- "SharjahMoCCE"
+strDateInterval <- "1 day"
 
 # Load packages
 #library(threadr)
@@ -65,7 +65,7 @@ plot1 <- ggplot(mass_dataset, aes(as.POSIXct(Date), PM2.5)) +
   theme_bw() +
   geom_line(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="red", size = 1) +
   geom_point(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="red", size = 4) +
-  ylab(expression(paste(PM[2.5], " (µg/",m^3, ")", " monitored (24h)"))) + 
+  ylab(expression(paste(PM[2.5], " (ug/",m^3, ")", " monitored (24h)"))) + 
   theme(axis.title.x=element_blank(),
         axis.text.x  = element_text(angle=90, vjust=0.5, hjust = 1, size=16, colour = "black", face="plain")) +
   theme(axis.title.y = element_text(face="plain", colour="black", size=16),
@@ -89,7 +89,7 @@ plot2 <- ggplot(mass_dataset, aes(as.POSIXct(Date), PM2.5)) +
   theme_bw() +
   geom_line(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="red", size = 1) +
   geom_point(aes(y = PM2.5, col = "PM2.5"), alpha=1, col="red", size = 4) +
-  ylab(expression(paste(PM[2.5], " (µg/",m^3, ")", " monitored (24h)"))) + 
+  ylab(expression(paste(PM[2.5], "(ug/",m^3, ")", " monitored (24h)"))) + 
   theme(axis.title.x=element_blank(),
         axis.text.x  = element_text(angle=90, vjust=0.5, hjust = 1, size=16, colour = "black", face="plain")) +
   theme(axis.title.y = element_text(face="plain", colour="black", size=16),
